@@ -1,11 +1,12 @@
 import React, { useReducer, useCallback } from 'react';
 
-import { Context } from './Context';
-import { initialAccounts } from './mockData';
-import { Operation, Account, UserAccounts } from './models';
+import { ExchangeContext } from '../context';
+import { initialAccounts } from '../mockData';
+import { Currency, Operation, Account, UserAccounts } from '../models';
 
-import { reducer } from './reducer';
-import { init } from './init';
+import { reducer } from '../reducer';
+import { init } from '../init';
+import { useQuery } from '../hooks';
 
 export enum Actions {
     Active = 'active',
@@ -14,6 +15,8 @@ export enum Actions {
     ChangeAccount = 'changeAccount',
     Exchange = 'exchange',
     ToggleOperation = 'toggleOperation',
+    UpdateNames = 'updateNames',
+    UpdateRates = 'updateRates',
 }
 
 export interface ExchangeSide {
@@ -32,13 +35,16 @@ export interface State {
 export interface Payload {
     type: Actions;
     account?: Account;
+    names?: Record<Currency, string>;
+    base?: Currency;
+    rates?: Record<Currency, number>;
     amount?: string;
     operation?: Operation;
 }
 
 export type Reducer = (state: State, payload: Payload) => void;
 
-export const Provider: React.FC = ({ children }) => {
+export const ExchangeProvider: React.FC = ({ children }) => {
     const [state, dispatch] = useReducer(reducer, initialAccounts, init);
 
     const changeActiveAccount = useCallback((account: Account) => dispatch({ type: Actions.ChangeActiveAccount, account }), []);
@@ -46,6 +52,10 @@ export const Provider: React.FC = ({ children }) => {
     const changeAccount = useCallback((account: Account) => dispatch({ type: Actions.ChangeAccount, account }), []);
     const toggleOperation = useCallback(() => dispatch({ type: Actions.ToggleOperation }), []);
     const makeExchange = useCallback(() => dispatch({ type: Actions.Exchange }), []);
+    const updateNames = useCallback((names: Record<Currency, string>) => dispatch({ type: Actions.UpdateNames, names }), []);
+    const updateRates = useCallback((base: Currency, rates: Record<Currency, number>) => dispatch({ type: Actions.UpdateRates, base, rates }), []);
+
+    useQuery(updateNames, updateRates);
 
     const value = {
         changeActiveAccount,
@@ -57,8 +67,8 @@ export const Provider: React.FC = ({ children }) => {
     };
 
     return (
-        <Context.Provider value={value}>
+        <ExchangeContext.Provider value={value}>
             {children}
-        </Context.Provider>
+        </ExchangeContext.Provider>
     );
 };

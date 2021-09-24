@@ -17,11 +17,14 @@ export interface ExchangeProps {
 export const Exchange: React.FC = () => {
     const [accountToChange, setAccountToChange] = useState<Account>();
 
-    const { state, toggleOperation, makeExchange } = useExchange();
+    const { state, changeActiveAccount, toggleOperation, makeExchange } = useExchange();
 
     const { operation, top, bottom } = state;
 
-    const handleAccountChange = useCallback((account?: Account) => setAccountToChange(account), [setAccountToChange]);
+    const handleAccountChange = useCallback((account?: Account) => {
+        account && changeActiveAccount(account);
+        setAccountToChange(account);
+    }, [changeActiveAccount, setAccountToChange]);
 
     if (!!accountToChange) {
         return <CurrencyMenu onCurrencyChange={handleAccountChange} />;
@@ -38,7 +41,7 @@ export const Exchange: React.FC = () => {
                     </Action>
                     <Rate>
                         <ChartLine />
-                        {top.account.code} = {top.account.rates[bottom.account.code]}{bottom.account.code}
+                        1{top.account.code} = {top.account.rates[bottom.account.code]}{bottom.account.code}
                     </Rate>
                 </Info>
                 <CurrencyInput isTop account={top.account} onAccountChange={handleAccountChange} />

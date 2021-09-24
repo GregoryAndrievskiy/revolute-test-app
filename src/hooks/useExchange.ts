@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 
-import { Context } from '../Context';
+import { ExchangeContext } from '../context';
 import { Account } from '../models';
-import { State } from '../Provider';
+import { State } from '../provider';
 
 export interface UseExchange {
     changeActiveAccount: (account: Account) => void;
@@ -14,5 +14,5 @@ export interface UseExchange {
 }
 
 export const useExchange = function () {
-    return useContext(Context);
+    return useContext(ExchangeContext);
 };

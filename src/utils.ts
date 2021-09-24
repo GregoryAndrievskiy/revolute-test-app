@@ -1,5 +1,5 @@
-import { Account, Operation } from "./models";
-import { State, ExchangeSide } from './Provider';
+import { Account, Currency, Operation, UserAccounts } from "./models";
+import { State, ExchangeSide } from './provider';
 
 export const invertOperation = {
     [Operation.Sell]: Operation.Buy,
@@ -76,6 +76,70 @@ export const exchange = (state: State) => {
             [bottom.account.code]: updatedBottom,
         },
     };
+};
+
+export const updateNames = (names: Record<Currency, string>, state: State) => {
+    return {
+        ...state,
+        accounts: Object.entries(state.accounts)
+            .reduce((newAccounts, [currency, account]) => ({
+                ...newAccounts,
+                [currency]: {
+                    ...account,
+                    name: names[currency as Currency],
+                }
+            }), {} as UserAccounts),
+    };
+};
+
+export const updateRates = (base: Currency, rates: Record<Currency, number>, state: State) => {
+    const newRates = {
+        ...state,
+        top: {
+            ...state.top,
+            account: {
+                ...state.top.account,
+                rates: Object.entries(state.top.account.rates).reduce((newRates, [rateCurrency]) => ({
+                    ...newRates,
+                    [rateCurrency]: getRatesWithBase(base, state.top.account.code, rateCurrency as Currency, rates)
+                }), {}),
+            }
+        },
+        bottom: {
+            ...state.bottom,
+            account: {
+                ...state.bottom.account,
+                rates: Object.entries(state.bottom.account.rates).reduce((newRates, [rateCurrency]) => ({
+                    ...newRates,
+                    [rateCurrency]: getRatesWithBase(base, state.bottom.account.code, rateCurrency as Currency, rates)
+                }), {}),
+            },
+        },
+        accounts: Object.entries(state.accounts)
+            .reduce((newAccounts, [currency, account]) => ({
+                ...newAccounts,
+                [currency]: {
+                    ...account,
+                    rates: Object.entries(account.rates).reduce((newRates, [rateCurrency]) => ({
+                        ...newRates,
+                        [rateCurrency]: getRatesWithBase(base, currency as Currency, rateCurrency as Currency, rates)
+                    }), {}),
+                }
+            }), {} as UserAccounts),
+    };
+
+    return newRates;
+};
+
+const getRatesWithBase = (base: Currency, currency: Currency, toCurrency: Currency, rates: Record<Currency, number>) => {
+    if (base === currency) {
+        return rates[toCurrency];
+    }
+
+    const currecyRate = rates[currency];
+    const toCurrencyRate = rates[toCurrency];
+
+    return parseFloat((toCurrencyRate / currecyRate).toFixed(8));
 };
 
 export const checkExceeded = (isTop: boolean, operation: Operation, balance: number, amount: string) => {

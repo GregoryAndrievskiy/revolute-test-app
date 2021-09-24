@@ -1,5 +1,5 @@
-import { State, Actions, Payload } from './Provider';
-import { invertOperation, convert, exchange } from './utils';
+import { State, Actions, Payload } from './provider';
+import { invertOperation, convert, exchange, updateNames, updateRates } from './utils';
 
 enum invertInput {
     top = 'bottom',
@@ -53,6 +53,10 @@ export const reducer = (state: State, payload: Payload) => {
                 ...state,
                 operation: invertOperation[operation],
             };
+        case Actions.UpdateNames:
+            return updateNames(payload.names!, state);
+        case Actions.UpdateRates:
+            return updateRates(payload.base!, payload.rates!, state);
         default:
             return state;
     }
