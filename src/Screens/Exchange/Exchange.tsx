@@ -1,11 +1,12 @@
 import React, { useState, useCallback } from 'react';
 
 import { Account, Currency, Operation, UserAccounts } from '../../models';
-import { CurrencyMenu, CurrencyInput, Content, OperationSwitcher, } from '../../Components';
+import { CurrencyMenu, CurrencyInput, Screen, Content, OperationSwitcher, } from '../../Components';
 import { useExchange } from '../../hooks';
 import { checkExceeded } from '../../utils';
 
 import { Info, Action, Rate, ConfirmButton } from './styled';
+import { ChartLine } from './ChartLine';
 
 export interface ExchangeProps {
     accounts: UserAccounts;
@@ -26,24 +27,27 @@ export const Exchange: React.FC = () => {
         return <CurrencyMenu onCurrencyChange={handleAccountChange} />;
     }
 
-    const exceededBalance = checkExceeded(true, operation, top.account.balance, top.amount) || checkExceeded(false, operation, bottom.account.balance, bottom.amount);
+    const exceededBalance = checkExceeded(true, operation, top.account?.balance, top.amount) || checkExceeded(false, operation, bottom.account.balance, bottom.amount);
 
     return (
-        <Content>
-            <Info>
-                <Action>
-                    {operation}
-                </Action>
-                <Rate>
-                    `1${top.account.code} = ${top.account.rates[bottom.account.code]}${bottom.account.code}`
-                </Rate>
-            </Info>
-            <CurrencyInput isTop account={top.account} onAccountChange={handleAccountChange} />
-            <OperationSwitcher operation={operation} onToggleOperation={toggleOperation} />
-            <CurrencyInput account={bottom.account} onAccountChange={handleAccountChange} />
-            <ConfirmButton onClick={makeExchange} disabled={exceededBalance}>
-                {operation} {top.account.code} for {bottom.account.code}
-            </ConfirmButton>
-        </Content>
+        <Screen>
+            <Content>
+                <Info>
+                    <Action>
+                        {operation}
+                    </Action>
+                    <Rate>
+                        <ChartLine />
+                        {top.account.code} = {top.account.rates[bottom.account.code]}{bottom.account.code}
+                    </Rate>
+                </Info>
+                <CurrencyInput isTop account={top.account} onAccountChange={handleAccountChange} />
+                <OperationSwitcher operation={operation} onToggleOperation={toggleOperation} />
+                <CurrencyInput account={bottom.account} onAccountChange={handleAccountChange} />
+                <ConfirmButton onClick={makeExchange} disabled={exceededBalance || !top.amount || !bottom.amount}>
+                    {operation} {top.account.code} for {bottom.account.code}
+                </ConfirmButton>
+            </Content>
+        </Screen>
     );
 };

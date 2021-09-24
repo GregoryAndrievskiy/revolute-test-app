@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const AppScreen = styled.div`
+export const Screen = styled.div`
     width: 100%;
     height: 100vh;
     display: flex;
@@ -17,7 +17,10 @@ export const Content = styled.div`
     max-width: 320px;
     display: flex;
     flex-direction: column;
-    justify-contnent: center;
-    justify-content: center;
+    margin-top: 200px;
     align-items: center;
+
+    > :not(:last-child) {
+        margin-bottom: 5px;
+    }
 `;

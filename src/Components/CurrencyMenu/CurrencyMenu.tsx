@@ -4,6 +4,10 @@ import { Content } from '../styled';
 import { useExchange } from '../../hooks';
 import { Currency } from '../../models';
 
+import { Screen, CurrencySearch, List, ListItem, Label, Dot, Name } from './styled';
+import { ArrowLeft } from './ArrowLeft';
+import { Close } from './Close';
+
 export interface CurrencyMenuProps {
     onCurrencyChange: () => void;
 }
@@ -27,20 +31,34 @@ export const CurrencyMenu: React.FC<CurrencyMenuProps> = ({ onCurrencyChange }) 
 
     const handleClick = useCallback(
         event => {
-            const { value } = event.currentTarget;
+            const value = event.currentTarget.getAttribute('data-currency');
             changeAccount(accounts[value as Currency]);
             onCurrencyChange();
         },
         [changeAccount, onCurrencyChange, accounts]
     );
 
+    const handleClear = useCallback(() => setValue(''), []);
+
     const filteredAccounts = value ? accountsArray.filter(({ code }) => code.includes(value)) : accountsArray;
 
     return (
-        <Content>
-            <button onClick={handleClose}>X</button>
-            <input onChange={handleChange} value={value} />
-            {filteredAccounts.map(({ code }) => <p key={code}><button value={code} onClick={handleClick}>{code}</button></p>)}
-        </Content>
+        <Screen>
+            <Content>
+                <CurrencySearch>
+                    <button onClick={handleClose}><ArrowLeft /></button>
+                    <input onChange={handleChange} value={value} />
+                    <button onClick={handleClear}><Close /></button>
+                </CurrencySearch>
+                <List>
+                    {filteredAccounts.map(({ code, name, balance }) => (
+                        <ListItem key={code} data-currency={code} onClick={handleClick}>
+                            <Label>{code}<Dot />{balance}</Label>
+                            <Name>{name}</Name>
+                        </ListItem>
+                    ))}
+                </List>
+            </Content>
+        </Screen>
     );
 };

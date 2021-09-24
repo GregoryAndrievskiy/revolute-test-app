@@ -1,8 +1,15 @@
 import React from 'react';
 
 import { Operation } from '../../models';
+import { ArrowUp } from './ArrowUp'
+import { ArrowDown } from './ArrowDown';
 
 import { Wrapper, SwitchButton } from './styled';
+
+const operationMap = {
+    [Operation.Sell]: <ArrowDown />,
+    [Operation.Buy]: <ArrowUp />,
+};
 
 export interface OperationSwitcherProps {
     operation: Operation;
@@ -12,7 +19,7 @@ export interface OperationSwitcherProps {
 export const OperationSwitcher: React.FC<OperationSwitcherProps> = ({ operation, onToggleOperation }) => {
     return (
         <Wrapper>
-            <SwitchButton onClick={onToggleOperation}>{operation === Operation.Sell ? 'JL' : 'T'}</SwitchButton>
+            <SwitchButton onClick={onToggleOperation}>{operationMap[operation]}</SwitchButton>
         </Wrapper>
     )
 };

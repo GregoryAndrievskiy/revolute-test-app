@@ -5,6 +5,7 @@ import { useExchange } from '../../hooks';
 import { checkExceeded } from '../../utils';
 
 import { Wrapper, StartAdornment, ChangeButton, Label, HelperText, InputField } from './styled';
+import { ChevronDown } from './ChevronDown';
 
 const operationMap = {
     [Operation.Sell]: '-',
@@ -63,7 +64,7 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = ({ isTop = false, acc
         <Wrapper>
             <StartAdornment>
                 <ChangeButton onClick={handleClick}>
-                    {account.code}
+                    {account.code}<ChevronDown />
                 </ChangeButton>
                 <Label>
                     Balance ${balance}
