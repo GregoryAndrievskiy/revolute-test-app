@@ -7,7 +7,7 @@ import { State } from '../provider';
 export interface UseExchange {
     changeActiveAccount: (account: Account) => void;
     changeActiveAmmount: (ammount: string) => void;
-    changeAccount: (ammount: Account) => void;
+    changeAccount: (account: Account) => void;
     toggleOperation: () => void;
     makeExchange: () => void;
     state: State;

@@ -15,15 +15,9 @@ export interface CurrencyMenuProps {
 export const CurrencyMenu: React.FC<CurrencyMenuProps> = ({ onCurrencyChange }) => {
     const [value, setValue] = useState('');
     const { state, changeAccount } = useExchange();
-    const { accounts, top, bottom } = state;
-    const { account: { code: topCode } } = top;
-    const { account: { code: bottomCode } } = bottom;
+    const { accounts, active, names } = state;
 
-    const accountsArray = useMemo(
-        () => Object
-            .entries(accounts).map(([, account]) => account)
-            .filter(account => account.code !== topCode && account.code !== bottomCode)
-        , [accounts, topCode, bottomCode]);
+    const accountsArray = useMemo(() => Object.entries(accounts).map(([, account]) => account).filter(account => account.code !== active.code), [accounts, active]);
 
     const handleClose = useCallback(() => onCurrencyChange(), [onCurrencyChange]);
 
@@ -51,10 +45,10 @@ export const CurrencyMenu: React.FC<CurrencyMenuProps> = ({ onCurrencyChange }) 
                     <button onClick={handleClear}><Close /></button>
                 </CurrencySearch>
                 <List>
-                    {filteredAccounts.map(({ code, name, balance }) => (
+                    {filteredAccounts.map(({ code, balance }) => (
                         <ListItem key={code} data-currency={code} onClick={handleClick}>
                             <Label>{code}<Dot />{balance}</Label>
-                            <Name>{name}</Name>
+                            {names?.[code] && <Name>{names?.[code]}</Name>}
                         </ListItem>
                     ))}
                 </List>

@@ -1,5 +1,5 @@
 import { State, Actions, Payload } from './provider';
-import { invertOperation, convert, exchange, updateNames, updateRates } from './utils';
+import { invertOperation, convert, exchange } from './utils';
 
 enum invertInput {
     top = 'bottom',
@@ -30,10 +30,28 @@ export const reducer = (state: State, payload: Payload) => {
                 },
                 [passiveKey]: {
                     ...state[passiveKey],
-                    amount: convert(activeAccount, passiveAccount, payload.amount!),
+                    amount: convert(state.rates, state.base, activeAccount.code, passiveAccount.code, payload.amount!),
                 }
             };
         case Actions.ChangeAccount:
+            if (payload.account!.code === passiveAccount.code) {
+                return {
+                    ...state,
+                    active: {
+                        ...passiveAccount,
+                        amount: '',
+                    },
+                    [activeKey]: {
+                        account: passiveAccount,
+                        amount: '',
+                    },
+                    [passiveKey]: {
+                        account: activeAccount,
+                        amount: '',
+                    },
+                };
+            }
+
             return {
                 ...state,
                 active: payload.account!,
@@ -54,9 +72,16 @@ export const reducer = (state: State, payload: Payload) => {
                 operation: invertOperation[operation],
             };
         case Actions.UpdateNames:
-            return updateNames(payload.names!, state);
+            return {
+                ...state,
+                names: payload.names!,
+            };
         case Actions.UpdateRates:
-            return updateRates(payload.base!, payload.rates!, state);
+            return {
+                ...state,
+                rates: payload.rates!,
+                base: payload.base!,
+            };
         default:
             return state;
     }

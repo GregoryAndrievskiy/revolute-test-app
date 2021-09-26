@@ -3,7 +3,7 @@ import React, { useState, useCallback } from 'react';
 import { Account, Currency, Operation, UserAccounts } from '../../models';
 import { CurrencyMenu, CurrencyInput, Screen, Content, OperationSwitcher, } from '../../Components';
 import { useExchange } from '../../hooks';
-import { checkExceeded } from '../../utils';
+import { convert, checkExceeded } from '../../utils';
 
 import { Info, Action, Rate, ConfirmButton } from './styled';
 import { ChartLine } from './ChartLine';
@@ -26,6 +26,8 @@ export const Exchange: React.FC = () => {
         setAccountToChange(account);
     }, [changeActiveAccount, setAccountToChange]);
 
+    const renderRate = useCallback(({ rates, base, top, bottom }) => convert(rates, base, top.account.code, bottom.account.code, '1'), []);
+
     if (!!accountToChange) {
         return <CurrencyMenu onCurrencyChange={handleAccountChange} />;
     }
@@ -37,11 +39,11 @@ export const Exchange: React.FC = () => {
             <Content>
                 <Info>
                     <Action>
-                        {operation}
+                        {operation},
                     </Action>
                     <Rate>
                         <ChartLine />
-                        1{top.account.code} = {top.account.rates[bottom.account.code]}{bottom.account.code}
+                        1{top.account.code} = {renderRate(state)}{bottom.account.code}
                     </Rate>
                 </Info>
                 <CurrencyInput isTop account={top.account} onAccountChange={handleAccountChange} />

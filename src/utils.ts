@@ -1,4 +1,4 @@
-import { Account, Currency, Operation, UserAccounts } from "./models";
+import { Currency, Operation } from "./models";
 import { State, ExchangeSide } from './provider';
 
 export const invertOperation = {
@@ -11,17 +11,34 @@ const MULTIPLIER = 10 ** PRECISION;
 
 export const mutateNumber = (value: number) => Math.round(value * MULTIPLIER);
 
-export const convert = (acitveAccount: Account, passiveAccount: Account, amount: string) => {
-    if (!amount) {
-        return amount;
+const calculateRate = (rates: Partial<Record<Currency, number>>, base: Currency, from: Currency, to: Currency): number => {
+    if (base === from) {
+        return rates[to]!;
     }
 
-    const { rates, } = acitveAccount;
-    const { code } = passiveAccount;
-    const rate = rates[code];
+    const fromCurrecyRate = rates[from];
+    const toCurrencyRate = rates[to];
+
+    if (!fromCurrecyRate) {
+        throw new Error(`rate ${base}/${from} not found`);
+    }
+
+    if (!toCurrencyRate) {
+        throw new Error(`rate ${base}/${to} not found`);
+    }
+
+    return parseFloat((toCurrencyRate! / fromCurrecyRate!).toFixed(8));
+};
+
+export const convert = (rates: Partial<Record<Currency, number>>, base: Currency, from: Currency, to: Currency, amount: string) => {
+    const rate = calculateRate(rates, base, from, to);
 
     if (!rate) {
-        throw new Error(`rate ${acitveAccount.code}/${code} not found`);
+        throw new Error(`rate ${from}/${to} not found`);
+    }
+
+    if (!amount) {
+        return ''
     }
 
     const numericAmount = parseFloat(amount);
@@ -76,70 +93,6 @@ export const exchange = (state: State) => {
             [bottom.account.code]: updatedBottom,
         },
     };
-};
-
-export const updateNames = (names: Record<Currency, string>, state: State) => {
-    return {
-        ...state,
-        accounts: Object.entries(state.accounts)
-            .reduce((newAccounts, [currency, account]) => ({
-                ...newAccounts,
-                [currency]: {
-                    ...account,
-                    name: names[currency as Currency],
-                }
-            }), {} as UserAccounts),
-    };
-};
-
-export const updateRates = (base: Currency, rates: Record<Currency, number>, state: State) => {
-    const newRates = {
-        ...state,
-        top: {
-            ...state.top,
-            account: {
-                ...state.top.account,
-                rates: Object.entries(state.top.account.rates).reduce((newRates, [rateCurrency]) => ({
-                    ...newRates,
-                    [rateCurrency]: getRatesWithBase(base, state.top.account.code, rateCurrency as Currency, rates)
-                }), {}),
-            }
-        },
-        bottom: {
-            ...state.bottom,
-            account: {
-                ...state.bottom.account,
-                rates: Object.entries(state.bottom.account.rates).reduce((newRates, [rateCurrency]) => ({
-                    ...newRates,
-                    [rateCurrency]: getRatesWithBase(base, state.bottom.account.code, rateCurrency as Currency, rates)
-                }), {}),
-            },
-        },
-        accounts: Object.entries(state.accounts)
-            .reduce((newAccounts, [currency, account]) => ({
-                ...newAccounts,
-                [currency]: {
-                    ...account,
-                    rates: Object.entries(account.rates).reduce((newRates, [rateCurrency]) => ({
-                        ...newRates,
-                        [rateCurrency]: getRatesWithBase(base, currency as Currency, rateCurrency as Currency, rates)
-                    }), {}),
-                }
-            }), {} as UserAccounts),
-    };
-
-    return newRates;
-};
-
-const getRatesWithBase = (base: Currency, currency: Currency, toCurrency: Currency, rates: Record<Currency, number>) => {
-    if (base === currency) {
-        return rates[toCurrency];
-    }
-
-    const currecyRate = rates[currency];
-    const toCurrencyRate = rates[toCurrency];
-
-    return parseFloat((toCurrencyRate / currecyRate).toFixed(8));
 };
 
 export const checkExceeded = (isTop: boolean, operation: Operation, balance: number, amount: string) => {

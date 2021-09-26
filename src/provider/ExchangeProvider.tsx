@@ -30,15 +30,18 @@ export interface State {
     top: ExchangeSide;
     bottom: ExchangeSide;
     operation: Operation;
+    names?: Partial<Record<Currency, string>>;
+    rates: Partial<Record<Currency, number>>;
+    base: Currency;
 }
 
 export interface Payload {
     type: Actions;
     account?: Account;
     names?: Record<Currency, string>;
-    base?: Currency;
     rates?: Record<Currency, number>;
     amount?: string;
+    base?: Currency;
     operation?: Operation;
 }
 
