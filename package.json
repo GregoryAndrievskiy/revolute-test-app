@@ -2,6 +2,7 @@
   "name": "revolute-test-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://gregoryandrievskiy.github.io/revolute-test-app/",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -11,6 +12,7 @@
     "@types/react": "^17.0.22",
     "@types/react-dom": "^17.0.9",
     "@types/styled-components": "^5.1.14",
+    "gh-pages": "^3.2.3",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.24.3",
@@ -23,7 +25,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "react-scripts build",
+    "deploy": "gh-pages -b master -d build"
   },
   "eslintConfig": {
     "extends": [
