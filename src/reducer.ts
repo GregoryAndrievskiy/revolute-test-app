@@ -34,6 +34,10 @@ export const reducer = (state: State, payload: Payload) => {
                 }
             };
         case Actions.ChangeAccount:
+            if (payload.account!.code === activeAccount.code) {
+                throw new Error(`goddamn: ${payload.account!.code}, ${activeAccount.code}`);
+            }
+
             if (payload.account!.code === passiveAccount.code) {
                 return {
                     ...state,

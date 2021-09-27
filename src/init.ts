@@ -3,7 +3,7 @@ import { Currency, Account, UserAccounts, Operation } from './models';
 import { State } from './provider';
 
 const initRates = {
-    EUR: 1.18,
+    EUR: 0.85,
     GBP: 0.73,
     MXN: 20,
 };

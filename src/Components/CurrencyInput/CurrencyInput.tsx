@@ -61,16 +61,16 @@ export const CurrencyInput: React.FC<CurrencyInputProps> = ({ isTop = false, acc
     }, [amount, operation]);
 
     return (
-        <Wrapper>
+        <Wrapper data-testid={isTop ? 'top-container' : 'bottom-container'}>
             <StartAdornment>
-                <ChangeButton onClick={handleClick}>
+                <ChangeButton data-testid="change-account-btn" onClick={handleClick}>
                     {account.code}<ChevronDown />
                 </ChangeButton>
                 <Label>
-                    Balance ${balance}
+                    {`Balance ${balance}`}
                 </Label>
             </StartAdornment>
-            <InputField value={(!active && !amount) ? '' : `${prefix}${amount}`} onChange={handleAmountChange} placeholder="0" type="text" onFocus={handleFocus} />
+            <InputField data-testid={isTop ? 'top-input' : 'bottom-input'} value={(!active && !amount) ? '' : `${prefix}${amount}`} onChange={handleAmountChange} placeholder="0" type="text" onFocus={handleFocus} />
             <HelperText>
                 {checkExceeded(isTop, operation, balance, amount) && 'exceeds balance'}
             </HelperText>

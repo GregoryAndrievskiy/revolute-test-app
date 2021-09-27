@@ -19,7 +19,7 @@ export const Exchange: React.FC = () => {
 
     const { state, changeActiveAccount, toggleOperation, makeExchange } = useExchange();
 
-    const { operation, top, bottom } = state;
+    const { operation, top, bottom, active } = state;
 
     const handleAccountChange = useCallback((account?: Account) => {
         account && changeActiveAccount(account);
@@ -39,17 +39,17 @@ export const Exchange: React.FC = () => {
             <Content>
                 <Info>
                     <Action>
-                        {operation},
+                        {`${operation} ${active.code}`}
                     </Action>
                     <Rate>
                         <ChartLine />
-                        1{top.account.code} = {renderRate(state)}{bottom.account.code}
+                        {`1${top.account.code} = ${renderRate(state) + bottom.account.code}`}
                     </Rate>
                 </Info>
                 <CurrencyInput isTop account={top.account} onAccountChange={handleAccountChange} />
                 <OperationSwitcher operation={operation} onToggleOperation={toggleOperation} />
                 <CurrencyInput account={bottom.account} onAccountChange={handleAccountChange} />
-                <ConfirmButton onClick={makeExchange} disabled={exceededBalance || !top.amount || !bottom.amount}>
+                <ConfirmButton data-testid="confirm-btn" onClick={makeExchange} disabled={exceededBalance || !top.amount || !bottom.amount}>
                     {operation} {top.account.code} for {bottom.account.code}
                 </ConfirmButton>
             </Content>

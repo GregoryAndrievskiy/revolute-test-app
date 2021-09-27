@@ -1,5 +1,5 @@
-import { Currency, Operation } from "./models";
-import { State, ExchangeSide } from './provider';
+import { Currency, Operation } from "../models";
+import { State, ExchangeSide } from '../provider';
 
 export const invertOperation = {
     [Operation.Sell]: Operation.Buy,
@@ -9,11 +9,15 @@ export const invertOperation = {
 const PRECISION = 2;
 const MULTIPLIER = 10 ** PRECISION;
 
-export const mutateNumber = (value: number) => Math.round(value * MULTIPLIER);
+const mutateNumber = (value: number) => Math.round(value * MULTIPLIER);
 
 const calculateRate = (rates: Partial<Record<Currency, number>>, base: Currency, from: Currency, to: Currency): number => {
     if (base === from) {
         return rates[to]!;
+    }
+
+    if (base === to) {
+        return parseFloat((1! / rates[from]!).toFixed(8));
     }
 
     const fromCurrecyRate = rates[from];
@@ -79,6 +83,7 @@ export const exchange = (state: State) => {
 
     return {
         ...state,
+        active: updatedTop,
         top: {
             ...top,
             account: updatedTop

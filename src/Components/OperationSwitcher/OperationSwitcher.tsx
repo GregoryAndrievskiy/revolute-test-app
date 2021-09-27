@@ -19,7 +19,7 @@ export interface OperationSwitcherProps {
 export const OperationSwitcher: React.FC<OperationSwitcherProps> = ({ operation, onToggleOperation }) => {
     return (
         <Wrapper>
-            <SwitchButton onClick={onToggleOperation}>{operationMap[operation]}</SwitchButton>
+            <SwitchButton data-testid="switch-btn" onClick={onToggleOperation}>{operationMap[operation]}</SwitchButton>
         </Wrapper>
     )
 };

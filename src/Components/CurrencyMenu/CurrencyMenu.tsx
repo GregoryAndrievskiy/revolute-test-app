@@ -27,9 +27,9 @@ export const CurrencyMenu: React.FC<CurrencyMenuProps> = ({ onCurrencyChange }) 
         event => {
             const value = event.currentTarget.getAttribute('data-currency');
             changeAccount(accounts[value as Currency]);
-            onCurrencyChange();
+            handleClose();
         },
-        [changeAccount, onCurrencyChange, accounts]
+        [changeAccount, handleClose, accounts]
     );
 
     const handleClear = useCallback(() => setValue(''), []);
@@ -41,12 +41,12 @@ export const CurrencyMenu: React.FC<CurrencyMenuProps> = ({ onCurrencyChange }) 
             <Content>
                 <CurrencySearch>
                     <button onClick={handleClose}><ArrowLeft /></button>
-                    <input onChange={handleChange} value={value} />
-                    <button onClick={handleClear}><Close /></button>
+                    <input data-testid="currency-input" onChange={handleChange} value={value} />
+                    <button disabled={!value} onClick={handleClear}><Close /></button>
                 </CurrencySearch>
-                <List>
+                <List role="listbox" data-testid="currenct-list">
                     {filteredAccounts.map(({ code, balance }) => (
-                        <ListItem key={code} data-currency={code} onClick={handleClick}>
+                        <ListItem role="option" data-testid={`${code}-item`} key={code} data-currency={code} onClick={handleClick}>
                             <Label>{code}<Dot />{balance}</Label>
                             {names?.[code] && <Name>{names?.[code]}</Name>}
                         </ListItem>
