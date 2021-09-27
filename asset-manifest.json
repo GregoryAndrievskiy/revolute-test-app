@@ -1,0 +1,20 @@
+{
+  "files": {
+    "main.css": "/revolute-test-app/static/css/main.2ae47eeb.chunk.css",
+    "main.js": "/revolute-test-app/static/js/main.eb53a9aa.chunk.js",
+    "main.js.map": "/revolute-test-app/static/js/main.eb53a9aa.chunk.js.map",
+    "runtime-main.js": "/revolute-test-app/static/js/runtime-main.8ac8a7ab.js",
+    "runtime-main.js.map": "/revolute-test-app/static/js/runtime-main.8ac8a7ab.js.map",
+    "static/js/2.efc478dd.chunk.js": "/revolute-test-app/static/js/2.efc478dd.chunk.js",
+    "static/js/2.efc478dd.chunk.js.map": "/revolute-test-app/static/js/2.efc478dd.chunk.js.map",
+    "index.html": "/revolute-test-app/index.html",
+    "static/css/main.2ae47eeb.chunk.css.map": "/revolute-test-app/static/css/main.2ae47eeb.chunk.css.map",
+    "static/js/2.efc478dd.chunk.js.LICENSE.txt": "/revolute-test-app/static/js/2.efc478dd.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.8ac8a7ab.js",
+    "static/js/2.efc478dd.chunk.js",
+    "static/css/main.2ae47eeb.chunk.css",
+    "static/js/main.eb53a9aa.chunk.js"
+  ]
+}
